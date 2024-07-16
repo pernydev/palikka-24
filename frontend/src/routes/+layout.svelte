@@ -7,6 +7,7 @@
 
 <div
 	id="rootl"
+	tabindex="-1"
 	style="--canvas-width: {CANVAS_WIDTH}; --canvas-height: {CANVAS_HEIGHT}; --pixel-size: {PIXEL_SIZE}px;"
 >
 	{@render children()}
