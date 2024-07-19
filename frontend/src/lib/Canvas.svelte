@@ -1,8 +1,11 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { onDestroy, onMount } from 'svelte';
 	import panzoom, { type PanZoom } from 'panzoom';
 	import { CANVAS_HEIGHT, CANVAS_WIDTH, PIXEL_SIZE } from '../constants';
-	import { grid } from './canvas';
+	import { place } from './canvas/place';
+	import { socket } from './canvas/socket';
+	import ImageGrid from './ImageGrid.svelte';
+	import { getCanvas } from './canvas/grid';
 
 	let canvas: HTMLDivElement;
 
@@ -17,6 +20,7 @@
 	};
 
 	let panzoomInstance: PanZoom;
+	let panning = false;
 
 	onMount(() => {
 		panzoomInstance = panzoom(canvas, {
@@ -25,29 +29,41 @@
 			bounds: true,
 			boundsPadding: 0.1,
 			autocenter: true,
-			onClick
+			zoomDoubleClickSpeed: -1, // Disable double click zoom
 		});
 
 		panzoomInstance.on('zoomend', () => {
-            setSelection();
-        });
+			setSelection();
+		});
+
+		panzoomInstance.on('pan', () => {
+			panning = true;
+		});
 
 		panzoomInstance.on('panend', () => {
+			panning = false;
 			setSelection();
-        });
+		});
+
+		getCanvas();
+	});
+
+	onDestroy(() => {
+		socket.close();
 	});
 
 	function onClick(event: Event) {
-		alert(1);
+		if (panning) return;
+		place(selection.x, selection.y, 0);
 	}
 
 	function mouseMove(event: MouseEvent) {
 		mouse = {
-            x: event.clientX,
-            y: event.clientY
-        };
+			x: event.clientX,
+			y: event.clientY
+		};
 
-        setSelection();
+		setSelection();
 	}
 
 	function setSelection() {
@@ -61,13 +77,16 @@
 </script>
 
 <!-- svelte-ignore a11y_no_static_element_interactions -->
-<div bind:this={canvas} id="canvas" onmousemove={mouseMove} tabindex="-1">
-	<div id="selection" style="--x: {selection.x}; --y: {selection.y};"  tabindex="-1"></div>
-	{#each Object.entries($grid) as [coords, value]}
-		<div
-			style="--x: {coords.split(',')[0]}; --y: {coords.split(',')[1]}; background-color: {value};"  tabindex="-1"
-		></div>
-	{/each}
+<!-- svelte-ignore a11y_click_events_have_key_events -->
+<div bind:this={canvas} id="canvas" onmousemove={mouseMove} tabindex="-1" onmouseup={onClick}>
+	<img
+		id="selection"
+		style="--x: {selection.x}; --y: {selection.y};"
+		tabindex="-1"
+		src="/assets/blocks/0.png"
+		alt=""
+	/>
+	<ImageGrid />
 </div>
 
 <style>
@@ -85,18 +104,15 @@
 		position: relative;
 	}
 
-	#canvas > * {
+	#selection {
 		position: absolute;
 		top: calc(var(--y) * var(--pixel-size));
 		left: calc(var(--x) * var(--pixel-size));
 		width: var(--pixel-size);
 		height: var(--pixel-size);
 		z-index: -1;
-	}
-
-	#selection {
-		background-color: #ff0000;
 		opacity: 0.5;
 		z-index: 0;
+		image-rendering: pixelated;
 	}
 </style>

@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -32,11 +33,24 @@ func Socket(c *gin.Context) {
 		SendChannel: send,
 	})
 
+	go func() {
+		for msg := range send {
+			fmt.Println("Sending message to", uuid)
+			err := conn.WriteMessage(websocket.BinaryMessage, msg)
+			if err != nil {
+				fmt.Println("error sending message:", err)
+				connections.RemoveConnection(uuid)
+				conn.Close()
+				return
+			}
+		}
+	}()
+
 	for {
-		_, msg, err := conn.ReadMessage()
+		_, _, err := conn.ReadMessage()
 		if err != nil {
+			fmt.Println("error reading message:", err)
 			break
 		}
-		send <- msg
 	}
 }

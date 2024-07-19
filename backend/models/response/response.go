@@ -17,7 +17,7 @@ func Success(data interface{}, c *gin.Context) {
 }
 
 func Error(err string, errorCode uint, c *gin.Context) {
-	c.JSON(200, Response{
+	c.JSON(int(errorCode), Response{
 		Error:     err,
 		ErrorCode: errorCode,
 		Succes:    false,
