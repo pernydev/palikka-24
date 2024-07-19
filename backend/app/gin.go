@@ -15,7 +15,7 @@ func InitServer() {
 	router := gin.Default()
 
 	router.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:5173"},
+		AllowOrigins:     []string{"http://localhost:5173", "https://palikka-24.vercel.app"},
 		AllowMethods:     []string{"GET", "POST"},
 		AllowHeaders:     []string{"Origin", "Content-Length", "Content-Type"},
 		ExposeHeaders:    []string{"Content-Length"},

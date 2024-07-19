@@ -29,7 +29,7 @@
 			bounds: true,
 			boundsPadding: 0.1,
 			autocenter: true,
-			zoomDoubleClickSpeed: -1, // Disable double click zoom
+			zoomDoubleClickSpeed: 1, // Disable double click zoom
 		});
 
 		panzoomInstance.on('zoomend', () => {
@@ -41,16 +41,28 @@
 		});
 
 		panzoomInstance.on('panend', () => {
-			panning = false;
-			setSelection();
+			setTimeout(() => {
+				panning = false;
+				setSelection();
+			}, 100);
 		});
 
 		getCanvas();
+
+		document.addEventListener('blur', onBlur);
+
+		return () => {
+			document.removeEventListener('blur', onBlur);
+		};
 	});
 
 	onDestroy(() => {
 		socket.close();
 	});
+
+	function onBlur() {
+		panning = false;
+	}
 
 	function onClick(event: Event) {
 		if (panning) return;
