@@ -1,6 +1,4 @@
 import { PUBLIC_API_URL } from "$env/static/public";
-import { get } from "svelte/store";
-import { hotbar, selected } from "../hotbar";
 
 export async function deleteArea(from_x: number, from_y: number, width: number, height: number) {
     const payload = [];
@@ -9,7 +7,7 @@ export async function deleteArea(from_x: number, from_y: number, width: number, 
             console.log(`Deleting block at ${x},${y}`);
             payload.push(x);
             payload.push(y);
-            payload.push(get(hotbar)[get(selected)]);
+            payload.push(0);
         }
     }
     
