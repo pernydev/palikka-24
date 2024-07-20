@@ -9,6 +9,7 @@
 	import { hotbar, selected } from './canvas/hotbar';
 	import { inventoryOpen } from './canvas/inventory';
 	import { tool } from './canvas/tool';
+	import { deleteArea } from './canvas/staff/area';
 
 	let canvas: HTMLDivElement;
 
@@ -123,7 +124,7 @@
 						area.step = 1;
 					} else {
 						area.step = 0;
-						alert('Area selected');
+						deleteArea(area.x, area.y, area.width, area.height);
 					}
 			}
 		}
