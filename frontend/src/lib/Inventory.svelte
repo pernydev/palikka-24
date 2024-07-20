@@ -49,6 +49,9 @@
 					console.log(index);
 					$hotbar[i] = index;
 				}}
+				onclick={() => {
+					delete $hotbar[i];
+				}}
 			>
 				{#if $hotbar[i]}
 					<img src={`/assets/blocks/${$hotbar[i]}.png`} alt="" />
