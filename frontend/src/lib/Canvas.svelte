@@ -93,6 +93,22 @@
 		if (diffX > 5 || diffY > 5) {
 			isMouseDown = false;
 		}
+
+		switch ($tool) {
+			case 'area':
+				if (area.step === 0) {
+					area = {
+						x: selection.x,
+						y: selection.y,
+						width: 1,
+						height: 1,
+						step: 0
+					};
+				} else {
+					area.width = selection.x - area.x + 1;
+					area.height = selection.y - area.y + 1;
+				}
+		}
 	}
 
 	function mouseUp(event: Event) {
@@ -104,17 +120,10 @@
 				case 'area':
 					console.log(area);
 					if (area.step === 0) {
-						area = {
-							x: selection.x,
-							y: selection.y,
-							width: 1,
-							height: 1,
-							step: 1
-						};
+						area.step = 1;
 					} else {
-						area.width = selection.x - area.x + 1;
-						area.height = selection.y - area.y + 1;
 						area.step = 0;
+						alert('Area selected');
 					}
 			}
 		}
