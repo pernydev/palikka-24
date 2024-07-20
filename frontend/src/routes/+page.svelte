@@ -4,6 +4,7 @@
 	import Hotbar from '$lib/Hotbar.svelte';
 	import Inventory from '$lib/Inventory.svelte';
 	import Toolbox from '$lib/staff/Toolbox.svelte';
+	import './canvas.css';
 
 	let isStaff = $state(true);
 </script>

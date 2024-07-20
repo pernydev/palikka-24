@@ -4,7 +4,7 @@
 	import { inventoryOpen, setOpenInventory } from './canvas/inventory';
 
 	let dialog: HTMLDialogElement;
-	const itemCount = 186;
+	const itemCount = 250;
 
 	function onKeyUp(event: KeyboardEvent) {
 		switch (event.key.toLowerCase()) {

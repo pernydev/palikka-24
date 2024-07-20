@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { CANVAS_HEIGHT, CANVAS_WIDTH, PIXEL_SIZE } from '../constants';
-	import './app.css';
 
 	let { children } = $props();
 </script>
