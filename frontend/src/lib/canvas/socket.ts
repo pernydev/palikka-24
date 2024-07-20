@@ -26,7 +26,6 @@ socket.onmessage = async (event) => {
     const arrayBuffer = await blobToArrayBuffer(event.data);
     const data = new Uint8Array(arrayBuffer);
     parseGridUpdate(data);
-    console.log(data);
 };
 
 let reconnectAttempts = 0;

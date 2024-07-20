@@ -1,6 +1,11 @@
 <script>
 	import Canvas from '$lib/Canvas.svelte';
 	import { connected } from '$lib/canvas/socket';
+	import Hotbar from '$lib/Hotbar.svelte';
+	import Inventory from '$lib/Inventory.svelte';
+	import Toolbox from '$lib/staff/Toolbox.svelte';
+
+	let isStaff = $state(true);
 </script>
 
 {#if !$connected}
@@ -11,6 +16,11 @@
 {/if}
 
 <Canvas />
+<Inventory />
+<Hotbar />
+{#if isStaff}
+	<Toolbox />
+{/if}
 
 <style>
 	#disconnected-overlay {

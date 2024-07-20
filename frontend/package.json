@@ -31,6 +31,7 @@
   },
   "type": "module",
   "dependencies": {
+    "lucide-svelte": "^0.411.0",
     "panzoom": "^9.4.3"
   }
 }

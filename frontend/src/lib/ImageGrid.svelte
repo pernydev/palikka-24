@@ -31,7 +31,6 @@
 
 		Object.entries(canvasGrid).forEach(([coords, texture]) => {
 			const [x, y] = coords.split(',').map(Number);
-			console.log(x, y, texture);
 			ctx.drawImage(getTexture(texture), x * PIXEL_SIZE, y * PIXEL_SIZE, PIXEL_SIZE, PIXEL_SIZE);
 		});
 	}

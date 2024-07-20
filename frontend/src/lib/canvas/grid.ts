@@ -1,4 +1,4 @@
-import { writable, type Writable } from 'svelte/store';
+import { get, writable, type Writable } from 'svelte/store';
 import './socket.ts';
 import { PUBLIC_API_URL } from '$env/static/public';
 
@@ -12,18 +12,27 @@ export async function getCanvas() {
 }
 
 export function parseGridUpdate(data: Uint8Array) {
-    const gridChange: Record<string, number> = {};
-
     for (let i = 0; i < data.length; i += 3) {
         const x = data[i];
         const y = data[i + 1];
         const texture = data[i + 2];
 
-        gridChange[`${x},${y}`] = texture;
-        console.log(`Setting ${x},${y} to ${texture}`);
+        switch (texture) {
+            case 0:
+                console.log('Deleting block');
+                grid.update((grid) => {
+                    delete grid[`${x},${y}`];
+                    return grid;
+                });
+                break;
+            default:
+                grid.update((grid) => {
+                    grid[`${x},${y}`] = texture;
+                    return grid;
+                });
+                break;
+        }
     }
 
-    grid.update((grid) => {
-        return { ...grid, ...gridChange };
-    });
+    console.log(get(grid));
 }
