@@ -3,12 +3,14 @@ import './socket.ts';
 import { PUBLIC_API_URL } from '$env/static/public';
 
 export const grid: Writable<Record<string, number>> = writable({});
+export const initialLoad = writable(false);
 
 export async function getCanvas() {
     const resp = await fetch(`${PUBLIC_API_URL}/grid`);
     const data = await resp.arrayBuffer();
     const gridData = new Uint8Array(data);
     parseGridUpdate(gridData);
+    initialLoad.set(true);
 }
 
 export function parseGridUpdate(data: Uint8Array) {

@@ -27,6 +27,7 @@ func InitServer() {
 	router.POST("/api/place", routes.Place)
 	router.GET("/api/grid", routes.Grid)
 	router.POST("/api/execute", routes.Execute)
+	router.POST("/api/auth", routes.Auth)
 
 	router.Run(":" + os.Getenv("PORT"))
 }

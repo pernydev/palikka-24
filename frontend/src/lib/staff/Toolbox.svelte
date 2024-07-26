@@ -1,9 +1,10 @@
 <script lang="ts">
+	import { initialLoad } from "$lib/canvas/grid";
 	import { tool } from "$lib/canvas/tool";
 	import { Brush, Scan } from "lucide-svelte";
 </script>
 
-<div class="toolbar">
+<div class="toolbar" data-loaded={$initialLoad}>
     <button data-selected={$tool === "paint"} onclick={() => $tool = "paint"}>
         <Brush />
     </button>
@@ -29,7 +30,13 @@
 		backdrop-filter: blur(0.5rem);
 		border-radius: 0.5rem;
 
+        opacity: 0;
+        transition: opacity 3s;
 	}
+
+    .toolbar[data-loaded="true"] {
+        opacity: 1;
+    }
     
     button {
         all: unset;

@@ -5,7 +5,7 @@
 	import { place } from './canvas/place';
 	import { socket } from './canvas/socket';
 	import ImageGrid from './ImageGrid.svelte';
-	import { getCanvas } from './canvas/grid';
+	import { getCanvas, initialLoad } from './canvas/grid';
 	import { hotbar, selected } from './canvas/hotbar';
 	import { inventoryOpen } from './canvas/inventory';
 	import { tool } from './canvas/tool';
@@ -141,6 +141,7 @@
 	tabindex="-1"
 	onmousedown={mouseDown}
 	onmouseup={mouseUp}
+	data-loaded={$initialLoad}
 >
 	{#if $tool === 'paint'}
 		<div
@@ -174,7 +175,26 @@
 		transition: transform 0.08s;
 
 		position: relative;
+
+		opacity: 0;
+		filter: blur(5px);
 	}
+
+	#canvas[data-loaded='true'] {
+		animation: fade-in 1s forwards;
+	}
+
+	@keyframes fade-in {
+		from {
+			opacity: 0;
+			filter: blur(5px);
+		}
+		to {
+			opacity: 1;
+			filter: blur(0);
+		}
+	}
+
 
 	#selection {
 		position: absolute;

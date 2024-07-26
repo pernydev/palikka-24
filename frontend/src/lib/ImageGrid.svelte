@@ -18,7 +18,7 @@
 	});
 
 	function reRender(canvasGrid: Record<string, number>) {
-		console.log('reRender');
+		console.log(canvasGrid);
 		if (!ctx) {
 			console.log('no ctx');
 			return;

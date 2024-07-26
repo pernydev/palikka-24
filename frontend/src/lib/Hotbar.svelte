@@ -1,9 +1,10 @@
 <script lang="ts">
+	import { initialLoad } from './canvas/grid';
 	import { inventoryOpen } from './canvas/inventory';
 	import HotbarItem from './HotbarItem.svelte';
 </script>
 
-<div class="hotbar">
+<div class="hotbar" data-loaded={$initialLoad}>
 	<HotbarItem slot="menu" />
     <span class="seprator"></span>
 	{#each Array.from({ length: 9 }) as _, i}
@@ -18,7 +19,7 @@
 		position: fixed;
 		bottom: 2rem;
 		left: 50%;
-		transform: translateX(-50%);
+		transform: translateX(-50%) translateY(200%);
 
 		display: flex;
 		justify-content: center;
@@ -28,6 +29,21 @@
 		background: #302358bd;
 		backdrop-filter: blur(0.5rem);
 		border-radius: 0.5rem;
+	}
+
+	.hotbar[data-loaded="true"] {
+		animation: in 0.5s 1s forwards;
+	}
+
+	@keyframes in {
+		from {
+			transform: translateX(-50%) translateY(100%);
+			opacity: 0;
+		}
+		to {
+			transform: translateX(-50%) translateY(0);
+			opacity: 1;
+		}
 	}
 
     .seprator {

@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Odota...</title>
+
+		<script>
+			const params = new URLSearchParams(window.location.search);
+			const token = params.get('code');
+			window.opener.postMessage(token, '*');
+			window.close();
+		</script>
+	</head>
+	<body></body>
+</html>
+
+<div id="background"></div>
+
+<style>
+	#background {
+		position: fixed;
+        inset: 0;
+		background: #0a0121;
+	}
+</style>
