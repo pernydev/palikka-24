@@ -6,6 +6,7 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/pernydev/palikka-24/app"
 	"github.com/pernydev/palikka-24/app/connections"
+	"github.com/pernydev/palikka-24/app/snapshot"
 	"github.com/pernydev/palikka-24/app/state"
 )
 
@@ -15,5 +16,6 @@ func main() {
 	state.Load()
 	go connections.StartDeltaTimer()
 	go state.Autosave()
+	go snapshot.Autosnapshot()
 	app.InitServer()
 }
