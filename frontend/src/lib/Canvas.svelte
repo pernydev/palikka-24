@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { loggedIn } from "./canvas/auth/auth";
 	import { open } from "./canvas/open";
 	import { onDestroy, onMount } from 'svelte';
 	import panzoom, { type PanZoom } from 'panzoom';
@@ -133,6 +134,7 @@
 			switch ($tool) {
 				case 'paint':
 					if (!$open) return;
+					if (!$loggedIn) return;
 					if ($cooldown > 0) return;
 					place(selection.x, selection.y);
 					break;
@@ -161,7 +163,7 @@
 	onmouseup={mouseUp}
 	data-loaded={$initialLoad}
 >
-	{#if $tool === 'paint' && $open}
+	{#if $tool === 'paint' && $open && $loggedIn}
 		<div
 			id="selection"
 			style="--x: {selection.x}; --y: {selection.y}; --src: url('/assets/blocks/{$hotbar[
