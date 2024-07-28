@@ -1,7 +1,6 @@
 package routes
 
 import (
-	"fmt"
 	"strconv"
 	"strings"
 
@@ -21,9 +20,6 @@ func Grid(c *gin.Context) {
 		data = append(data, byte(x))
 		data = append(data, byte(y))
 		data = append(data, block)
-
-		fmt.Println("Grid", coordsParsed[0], coordsParsed[1], block)
-		fmt.Println("Data", data)
 	}
 
 	c.Data(200, "application/octet-stream", data)

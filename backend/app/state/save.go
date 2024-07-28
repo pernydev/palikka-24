@@ -5,6 +5,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/pernydev/palikka-24/app/state/cooldown"
 )
 
 func Save(file *os.File) {
@@ -29,6 +31,7 @@ func Autosave() {
 
 	for {
 		go Save(file)
+		go cooldown.CleanUp() // Just run that every three seconds too
 		time.Sleep(3 * time.Second)
 	}
 }

@@ -18,6 +18,7 @@
         if (resp.ok) {
             const data = await resp.json();
             localStorage.setItem('token', data.token);
+            localStorage.setItem('staff', data.staff ? 'true' : 'false');
             out = true;
             setTimeout(() => {
                 goto('/');

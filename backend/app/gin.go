@@ -17,7 +17,7 @@ func InitServer() {
 	router.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"http://localhost:5173", "https://palikka-24.vercel.app"},
 		AllowMethods:     []string{"GET", "POST"},
-		AllowHeaders:     []string{"Origin", "Content-Length", "Content-Type"},
+		AllowHeaders:     []string{"Origin", "Content-Length", "Content-Type", "Authorization"},
 		ExposeHeaders:    []string{"Content-Length"},
 		AllowCredentials: true,
 	}))
@@ -28,6 +28,8 @@ func InitServer() {
 	router.GET("/api/grid", routes.Grid)
 	router.POST("/api/execute", routes.Execute)
 	router.POST("/api/auth", routes.Auth)
+	router.POST("/api/open", routes.SetOpen)
+	router.GET("/api/open", routes.GetOpen)
 
 	router.Run(":" + os.Getenv("PORT"))
 }

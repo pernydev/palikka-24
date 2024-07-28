@@ -2,6 +2,6 @@
 
 import { writable, type Writable } from "svelte/store";
 
-type Tool = 'paint' | 'area' | 'auto' | 'log'
+type Tool = 'paint' | 'area'
 
 export const tool: Writable<Tool> = writable('paint');

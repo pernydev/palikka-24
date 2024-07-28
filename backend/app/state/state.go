@@ -3,6 +3,7 @@ package state
 import "fmt"
 
 var State = make(map[string]uint8)
+var Open = true
 
 func PlaceBlock(x, y int, texture uint8) {
 	if texture == 0 {

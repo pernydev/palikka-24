@@ -4,12 +4,23 @@
 	import Hotbar from '$lib/Hotbar.svelte';
 	import Inventory from '$lib/Inventory.svelte';
 	import Toolbox from '$lib/staff/Toolbox.svelte';
+	import { onMount } from 'svelte';
 	import './canvas.css';
+	import { cooldown } from '$lib/canvas/cooldown';
+	import { checkIsLoggedIn } from '$lib/canvas/auth/auth';
 
 	let isStaff = $state(true);
+	let allowDisconnect = $state(true);
+
+	onMount(() => {
+		checkIsLoggedIn();
+		setTimeout(() => {
+			allowDisconnect = false;
+		}, 2000);
+	});
 </script>
 
-{#if !$connected}
+{#if !$connected && !allowDisconnect}
 	<div id="disconnected-overlay">
 		<h2>Yhteys katkesi!</h2>
 		<p>Yritetään uudelleen...</p>
@@ -21,6 +32,12 @@
 <Hotbar />
 {#if isStaff}
 	<Toolbox />
+{/if}
+
+{#if $cooldown}
+	<div id="cooldown-overlay">
+		<span>{$cooldown}s</span>
+	</div>
 {/if}
 
 <style>
@@ -50,5 +67,19 @@
 		to {
 			opacity: 1;
 		}
+	}
+
+	#cooldown-overlay {
+		position: fixed;
+		top: 1rem;
+		left: 50%;
+		transform: translateX(-50%);
+		padding: 0.5rem 1rem;
+		background: #403d589c;
+		backdrop-filter: blur(0.5rem);
+		color: white;
+		border-radius: 0.5rem;
+		font-size: 1.5em;
+		z-index: 1000;
 	}
 </style>

@@ -1,17 +1,49 @@
 <script lang="ts">
-	import { initialLoad } from "$lib/canvas/grid";
-	import { tool } from "$lib/canvas/tool";
-	import { Brush, Scan } from "lucide-svelte";
+	import { PUBLIC_API_URL } from '$env/static/public';
+	import { initialLoad } from '$lib/canvas/grid';
+	import { open } from '$lib/canvas/open';
+	import { tool } from '$lib/canvas/tool';
+	import { Brush, Lock, Scan, Unlock } from 'lucide-svelte';
+	import { onMount } from 'svelte';
+
+	let showTools = $state(false);
+	let isGod = $state(false);
+
+	onMount(() => {
+		showTools = (localStorage.getItem('staff') ?? 'false') === 'true';
+		isGod = (localStorage.getItem('god') ?? 'false') === 'true';
+	});
+
+	function sendLockStatus() {
+		fetch(`${PUBLIC_API_URL}/open`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: localStorage.getItem('token') ?? ''
+			}
+		});
+	}
 </script>
 
-<div class="toolbar" data-loaded={$initialLoad}>
-    <button data-selected={$tool === "paint"} onclick={() => $tool = "paint"}>
-        <Brush />
-    </button>
-    <button data-selected={$tool === "area"} onclick={() => $tool = "area"}>
-        <Scan />
-    </button>
-</div>
+{#if showTools}
+	<div class="toolbar" data-loaded={$initialLoad}>
+		<button data-selected={$tool === 'paint'} onclick={() => ($tool = 'paint')}>
+			<Brush />
+		</button>
+		<button data-selected={$tool === 'area'} onclick={() => ($tool = 'area')}>
+			<Scan />
+		</button>
+		{#if isGod}
+			<button onclick={() => sendLockStatus()}>
+				{#if $open}
+					<Lock />
+				{:else}
+					<Unlock />
+				{/if}
+			</button>
+		{/if}
+	</div>
+{/if}
 
 <style>
 	.toolbar {
@@ -21,7 +53,7 @@
 		transform: translateY(-50%);
 
 		display: flex;
-        flex-direction: column;
+		flex-direction: column;
 		justify-content: center;
 		align-items: center;
 		gap: 0.5rem;
@@ -30,28 +62,28 @@
 		backdrop-filter: blur(0.5rem);
 		border-radius: 0.5rem;
 
-        opacity: 0;
-        transition: opacity 3s;
+		opacity: 0;
+		transition: opacity 3s;
 	}
 
-    .toolbar[data-loaded="true"] {
-        opacity: 1;
-    }
-    
-    button {
-        all: unset;
-        cursor: pointer;
-        color: white;
-        background: #403d5877;
-        border-radius: 0.5rem;
-        padding: 0.5rem;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        transition: background 0.5s;
-    }
+	.toolbar[data-loaded='true'] {
+		opacity: 1;
+	}
 
-    button[data-selected="true"] {
-        background: #403d58;
-    }
+	button {
+		all: unset;
+		cursor: pointer;
+		color: white;
+		background: #403d5877;
+		border-radius: 0.5rem;
+		padding: 0.5rem;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		transition: background 0.5s;
+	}
+
+	button[data-selected='true'] {
+		background: #403d58;
+	}
 </style>

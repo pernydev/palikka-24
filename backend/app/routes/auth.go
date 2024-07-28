@@ -6,9 +6,12 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/pernydev/palikka-24/app/discolog"
+	"github.com/pernydev/palikka-24/models"
 )
 
 func Auth(c *gin.Context) {
@@ -91,9 +94,12 @@ func Auth(c *gin.Context) {
 		return
 	}
 
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"id": data["id"],
-	})
+	tokenData := models.AuthTokenData{
+		ID:    data["id"].(string),
+		Staff: isStaff(data["id"].(string)),
+	}
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, tokenData)
 
 	tokenString, err := token.SignedString([]byte(os.Getenv("JWT_SECRET")))
 	if err != nil {
@@ -101,5 +107,24 @@ func Auth(c *gin.Context) {
 		return
 	}
 
-	c.JSON(200, gin.H{"token": tokenString})
+	go func() {
+		discolog.Send(map[string]string{
+			"user":  fmt.Sprintf("<@%s>", tokenData.ID),
+			"staff": fmt.Sprintf("%t", tokenData.Staff),
+		}, "User logged in")
+	}()
+
+	c.JSON(200, gin.H{"token": tokenString, "staff": tokenData.Staff})
+}
+
+func isStaff(id string) bool {
+	var staffMembers = strings.Split(os.Getenv("STAFF_MEMBERS"), ",")
+	fmt.Println(staffMembers)
+	for _, staffMember := range staffMembers {
+		fmt.Println(staffMember, id)
+		if staffMember == id {
+			return true
+		}
+	}
+	return false
 }

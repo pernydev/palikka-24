@@ -77,4 +77,14 @@
         }
     }
 
+    button {
+        all: unset;
+        cursor: pointer;
+        padding: 0.5em 1em;
+        background: #403d58;
+        color: white;
+        border-radius: 0.5rem;
+        transition: background 0.5s;
+    }
+
 </style>

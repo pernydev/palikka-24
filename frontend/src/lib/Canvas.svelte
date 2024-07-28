@@ -1,15 +1,17 @@
 <script lang="ts">
+	import { open } from "./canvas/open";
 	import { onDestroy, onMount } from 'svelte';
 	import panzoom, { type PanZoom } from 'panzoom';
 	import { CANVAS_HEIGHT, CANVAS_WIDTH, PIXEL_SIZE } from '../constants';
 	import { place } from './canvas/place';
 	import { socket } from './canvas/socket';
 	import ImageGrid from './ImageGrid.svelte';
-	import { getCanvas, initialLoad } from './canvas/grid';
+	import { getCanvas, grid, init, initialLoad } from './canvas/grid';
 	import { hotbar, selected } from './canvas/hotbar';
 	import { inventoryOpen } from './canvas/inventory';
 	import { tool } from './canvas/tool';
 	import { deleteArea } from './canvas/staff/area';
+	import { cooldown } from "./canvas/cooldown";
 
 	let canvas: HTMLDivElement;
 
@@ -50,7 +52,7 @@
 			zoomDoubleClickSpeed: 1 // Disable double click zoom
 		});
 
-		getCanvas();
+		init();
 	});
 
 	$effect(() => {
@@ -77,6 +79,14 @@
 			x: event.clientX,
 			y: event.clientY
 		};
+		
+		if (event.which === 2) {
+			const block = $grid[`${selection.x},${selection.y}`];
+			if (block) {
+				$hotbar[$selected] = block;
+			}
+		}
+
 		isMouseDown = true;
 	}
 
@@ -108,6 +118,12 @@
 				} else {
 					area.width = selection.x - area.x + 1;
 					area.height = selection.y - area.y + 1;
+					if (area.width > 20) {
+						area.width = 20;
+					}
+					if (area.height > 20) {
+						area.height = 20;
+					}
 				}
 		}
 	}
@@ -116,6 +132,8 @@
 		if (isMouseDown) {
 			switch ($tool) {
 				case 'paint':
+					if (!$open) return;
+					if ($cooldown > 0) return;
 					place(selection.x, selection.y);
 					break;
 				case 'area':
@@ -143,13 +161,14 @@
 	onmouseup={mouseUp}
 	data-loaded={$initialLoad}
 >
-	{#if $tool === 'paint'}
+	{#if $tool === 'paint' && $open}
 		<div
 			id="selection"
 			style="--x: {selection.x}; --y: {selection.y}; --src: url('/assets/blocks/{$hotbar[
 				$selected
 			]}.png');"
 			tabindex="-1"
+			data-cooldown={$cooldown > 0}
 			data-remover={$selected === -1}
 		></div>
 	{:else if $tool === 'area'}
@@ -211,6 +230,10 @@
 
 	#selection[data-remover='true'] {
 		background: white;
+	}
+
+	#selection[data-cooldown='true'] {
+		filter: grayscale(75%);
 	}
 
 	#area {
