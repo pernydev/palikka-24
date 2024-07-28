@@ -1,9 +1,10 @@
 <script>
 	import { goto } from '$app/navigation';
+	import { PUBLIC_REDIRECT_URI } from '$env/static/public';
 	import Backdrop from '$lib/Backdrop.svelte';
 	import { onMount } from 'svelte';
 
-    const URL = "https://discord.com/oauth2/authorize?client_id=1266025772976705567&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A5173%2Fcallback.html&scope=identify+role_connections.write&prompt=none";
+    const URL = `https://discord.com/oauth2/authorize?client_id=1266025772976705567&response_type=code&redirect_uri=${PUBLIC_REDIRECT_URI}&scope=identify+role_connections.write&prompt=none`;
     let out = false;
 
     function openAuthDialog() {
