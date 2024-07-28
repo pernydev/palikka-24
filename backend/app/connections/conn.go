@@ -17,6 +17,13 @@ func RemoveConnection(uuid string) {
 
 func SendToAll(msg []byte) {
 	for _, conn := range Connections {
-		conn.SendChannel <- msg
+		func() {
+			defer func() {
+				if r := recover(); r != nil {
+					RemoveConnection(conn.UUID)
+				}
+			}()
+			conn.SendChannel <- msg
+		}()
 	}
 }

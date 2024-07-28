@@ -86,6 +86,7 @@
 			if (block) {
 				$hotbar[$selected] = block;
 			}
+			return;
 		}
 
 		isMouseDown = true;

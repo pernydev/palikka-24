@@ -39,7 +39,7 @@ func Socket(c *gin.Context) {
 			err := conn.WriteMessage(websocket.BinaryMessage, msg)
 			if err != nil {
 				fmt.Println("error sending message:", err)
-				connections.RemoveConnection(uuid)
+				close(send)
 				conn.Close()
 				return
 			}
