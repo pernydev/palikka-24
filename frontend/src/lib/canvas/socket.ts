@@ -5,9 +5,9 @@ import { parseGridUpdate } from './grid';
 import { isOpenChangeMessage, open } from './open';
 
 
+export const connected = writable(false);
 export function connect() {
     const socket = new WebSocket(PUBLIC_WS_URL);
-	const connected = writable(false);
 
 	socket.onopen = () => {
 		connected.set(true);

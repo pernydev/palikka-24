@@ -1,18 +1,17 @@
 <script lang="ts">
-	import { loggedIn } from "./canvas/auth/auth";
-	import { open } from "./canvas/open";
+	import { loggedIn } from './canvas/auth/auth';
+	import { open } from './canvas/open';
 	import { onDestroy, onMount } from 'svelte';
 	import panzoom, { type PanZoom } from 'panzoom';
 	import { CANVAS_HEIGHT, CANVAS_WIDTH, PIXEL_SIZE } from '../constants';
 	import { place } from './canvas/place';
-	import { socket } from './canvas/socket';
 	import ImageGrid from './ImageGrid.svelte';
 	import { getCanvas, grid, init, initialLoad } from './canvas/grid';
 	import { hotbar, selected } from './canvas/hotbar';
-	import { inventoryOpen } from './canvas/inventory';
+	import { closeInventory, inventoryOpen, setOpenInventory } from './canvas/inventory';
 	import { tool } from './canvas/tool';
 	import { deleteArea } from './canvas/staff/area';
-	import { cooldown } from "./canvas/cooldown";
+	import { cooldown } from './canvas/cooldown';
 
 	let canvas: HTMLDivElement;
 
@@ -50,20 +49,42 @@
 			bounds: true,
 			boundsPadding: 0.1,
 			autocenter: true,
-			zoomDoubleClickSpeed: 1 // Disable double click zoom
+			zoomDoubleClickSpeed: 1, // Disable double click zoom
+			onTouch
 		});
 
 		init();
 	});
 
+	function onTouch(event: TouchEvent) {
+		console.log('touch');
+		// get the item touched on. If it has data-ontouch-action switch statement for action
+		const target = event.target as HTMLElement;
+		const action = target.getAttribute('data-ontouch-action');
+		if (!action) {
+			touchPlace(event);
+			return;
+		}
+
+		switch (action) {
+			case 'inventory':
+				const slot = target.getAttribute('data-inventory-item');
+				if (!slot) return;
+				$selected = 0;
+				$hotbar[0] = parseInt(slot);
+				console.log('inventory', slot);
+				closeInventory();
+				break;
+			case 'place':
+				place(selection.x, selection.y);
+				break;
+		}
+	}
+
 	$effect(() => {
 		if (!panzoom) return;
 		if ($inventoryOpen) panzoomInstance.pause();
 		else panzoomInstance.resume();
-	});
-
-	onDestroy(() => {
-		socket.close();
 	});
 
 	function setSelection() {
@@ -80,7 +101,7 @@
 			x: event.clientX,
 			y: event.clientY
 		};
-		
+
 		if (event.which === 2) {
 			if ($selected === -1) $selected = 0;
 			const block = $grid[`${selection.x},${selection.y}`];
@@ -131,7 +152,45 @@
 		}
 	}
 
+	function canvasTouchStart(event: TouchEvent) {
+		if (event.touches.length > 1) return;
+		initial = {
+			x: event.touches[0].clientX,
+			y: event.touches[0].clientY
+		};
+		isMouseDown = true;
+	}
+
+	function touchMove(event: TouchEvent) {
+		if (!mouseDown) return;
+		let diffX = Math.abs(event.touches[0].clientX - initial.x);
+		let diffY = Math.abs(event.touches[0].clientY - initial.y);
+		if (diffX > 5 || diffY > 5) {
+			isMouseDown = false;
+		}
+	}
+
+	function touchPlace(event: TouchEvent) {
+		if (!mouseDown) return;
+
+		if ($tool === 'paint') {
+			if (!$open) return;
+			if (!$loggedIn) return;
+			if ($cooldown > 0) return;
+
+			const rect = canvas.getBoundingClientRect();
+			const x = (event.touches[0].clientX - rect.left) / panzoomInstance.getTransform().scale;
+			const y = (event.touches[0].clientY - rect.top) / panzoomInstance.getTransform().scale;
+
+			selection.x = Math.min(Math.max(0, Math.floor(x / PIXEL_SIZE)), CANVAS_WIDTH);
+			selection.y = Math.min(Math.max(0, Math.floor(y / PIXEL_SIZE)), CANVAS_HEIGHT);
+		}
+		isMouseDown = false;
+	}
+
 	function mouseUp(event: Event) {
+		if (window.innerWidth < 768) return;
+
 		if (isMouseDown) {
 			switch ($tool) {
 				case 'paint':
@@ -163,6 +222,8 @@
 	tabindex="-1"
 	onmousedown={mouseDown}
 	onmouseup={mouseUp}
+	ontouchstart={canvasTouchStart}
+	ontouchmove={touchMove}
 	data-loaded={$initialLoad}
 >
 	{#if $tool === 'paint' && $open && $loggedIn}
@@ -217,7 +278,6 @@
 			filter: blur(0);
 		}
 	}
-
 
 	#selection {
 		position: absolute;

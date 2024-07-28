@@ -37,13 +37,14 @@
 
 <svelte:window on:keydown={onKeydown} />
 
-<button data-selected={slot === $selected} onclick={onClick}>
+<button data-selected={slot === $selected} onclick={onClick} data-index={slot}>
+
 	{#if slot === 'remove'}
 		<Trash2 />
 	{:else if slot === 'menu'}
 		<LayoutGrid />
 	{:else if $hotbar[slot]}
-		<img src={`/assets/blocks/${$hotbar[slot]}.png`} alt="" />	
+		<img src={`/assets/blocks/${$hotbar[slot]}.png`} alt="" data-ontouch-action="place" />	
 	{/if}
 </button>
 
@@ -75,5 +76,21 @@
 		border-radius: 0.5rem;
 		image-rendering: pixelated;
 		z-index: 2;
+	}
+
+	button[data-index='menu'] {
+		display: block!important;
+	}
+
+	button[data-index='0'] {
+		display: block!important;
+	}
+
+	@media (max-width: 768px) {
+		button {
+			display: none;
+			transform: translateY(0)!important;
+			border: none!important;
+		}
 	}
 </style>

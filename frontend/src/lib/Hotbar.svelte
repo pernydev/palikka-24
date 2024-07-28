@@ -15,11 +15,11 @@
 			{#each Array.from({ length: 9 }) as _, i}
 				<HotbarItem slot={i} />
 			{/each}
-			<span class="seprator"></span>
+			<span class="seprator second"></span>
 			<HotbarItem slot="remove" />
 		{:else}
 			<p>Kirjaudu sisään piirtääksesi</p>
-			<button onclick={() => goto('auth')}>Kirjaudu sisään</button>
+			<a href="/auth">Kirjaudu sisään</a>
 		{/if}
 	</div>
 {/if}
@@ -39,6 +39,8 @@
 		background: #302358bd;
 		backdrop-filter: blur(0.5rem);
 		border-radius: 0.5rem;
+
+		z-index: 1000;
 	}
 
 	.hotbar[data-loaded='true'] {
@@ -85,5 +87,11 @@
 		background: #fff;
 		opacity: 0.5;
 		margin-inline: 0.5rem;
+	}
+
+	@media (max-width: 768px) {
+		.seprator {
+			display: none;
+		}
 	}
 </style>

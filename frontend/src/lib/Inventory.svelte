@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { hotbar, selected } from './canvas/hotbar';
 	import { onMount } from 'svelte';
-	import { inventoryOpen, setOpenInventory } from './canvas/inventory';
+	import { inventoryOpen, setCloseInventory, setOpenInventory } from './canvas/inventory';
 
 	let dialog: HTMLDialogElement;
 	const itemCount = 250;
@@ -19,14 +19,36 @@
 		}
 	}
 
+	function inventorySlotClick(index: number) {
+		if (window.innerWidth < 768) {
+			$selected = 0;
+			$hotbar[0] = index + 1;
+			dialog.close();
+			return;
+		}
+
+		for (let h = 0; h < 9; h++) {
+			if ($hotbar[h]) continue;
+			$hotbar[h] = index + 1;
+			$selected = h;
+			break;
+		}
+	}
+
 	onMount(() => {
+		dialog.showModal();
 		setOpenInventory(() => {
-			$inventoryOpen = true;
 			dialog.showModal();
+			$inventoryOpen = true;
+		});
+
+		setCloseInventory(() => {
+			$inventoryOpen = false;
+			dialog.close();
 		});
 
 		dialog.addEventListener('close', () => {
-			console.log('close');	
+			console.log('close');
 			$inventoryOpen = false;
 		});
 	});
@@ -67,16 +89,14 @@
 					event.dataTransfer?.setData('text/plain', (i + 1).toString());
 				}}
 				draggable
-				onclick={() => {
-					for (let h = 0; h < 9; h++) {
-						if ($hotbar[h]) continue;
-						$hotbar[h] = i + 1;
-						$selected = h;
-						break;
-					}
-				}}
+				onclick={() => inventorySlotClick(i)}
 			>
-				<img src={`/assets/blocks/${i + 1}.png`} alt="" />
+				<img
+					src={`/assets/blocks/${i + 1}.png`}
+					alt=""
+					data-ontouch-action="inventory"
+					data-inventory-item={i + 1}
+				/>
 			</button>
 		{/each}
 	</div>
@@ -129,5 +149,11 @@
 		height: 3rem;
 		image-rendering: pixelated;
 		border-radius: 0.5rem;
+	}
+
+	@media (max-width: 768px) {
+		.hotbar {
+			display: none;
+		}
 	}
 </style>
