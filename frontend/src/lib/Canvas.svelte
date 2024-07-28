@@ -82,6 +82,7 @@
 		};
 		
 		if (event.which === 2) {
+			if ($selected === -1) return;
 			const block = $grid[`${selection.x},${selection.y}`];
 			if (block) {
 				$hotbar[$selected] = block;
