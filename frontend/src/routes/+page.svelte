@@ -1,6 +1,6 @@
 <script>
 	import Canvas from '$lib/Canvas.svelte';
-	import { connected } from '$lib/canvas/socket';
+	import { connect, connected } from '$lib/canvas/socket';
 	import Hotbar from '$lib/Hotbar.svelte';
 	import Inventory from '$lib/Inventory.svelte';
 	import Toolbox from '$lib/staff/Toolbox.svelte';
@@ -13,6 +13,7 @@
 	let allowDisconnect = $state(true);
 
 	onMount(() => {
+		connect();
 		checkIsLoggedIn();
 		setTimeout(() => {
 			allowDisconnect = false;
