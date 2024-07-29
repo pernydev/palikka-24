@@ -6,7 +6,6 @@
 	let dialog: HTMLDialogElement;
 	const itemCount = 250;
 
-
 	function onKeyUp(event: KeyboardEvent) {
 		switch (event.key.toLowerCase()) {
 			case 'escape':
@@ -82,7 +81,7 @@
 		{#each Array.from({ length: itemCount }) as _, i}
 			<button
 				ondragstart={(event) => {
-					console.log('dragstart'§);
+					console.log('dragstart');
 					event.dataTransfer?.setData('text/plain', (i + 1).toString());
 				}}
 				draggable
