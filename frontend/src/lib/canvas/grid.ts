@@ -28,23 +28,17 @@ export function parseGridUpdate(data: Uint8Array) {
         const x = data[i];
         const y = data[i + 1];
         const texture = data[i + 2];
+        const newgrid = get(grid);
 
         switch (texture) {
             case 0:
-                console.log('Deleting block');
-                grid.update((grid) => {
-                    delete grid[`${x},${y}`];
-                    return grid;
-                });
+                delete newgrid[`${x},${y}`];
                 break;
             default:
-                grid.update((grid) => {
-                    grid[`${x},${y}`] = texture;
-                    return grid;
-                });
+                newgrid[`${x},${y}`] = texture;
                 break;
         }
     }
 
-    console.log(get(grid));
+    grid.set(get(grid));
 }
