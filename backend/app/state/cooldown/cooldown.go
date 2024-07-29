@@ -5,8 +5,8 @@ import "time"
 var Cooldowns = make(map[string]time.Time)
 
 func SetCooldown(ip string, id string) {
-	setCooldown(ip, 7)
-	setCooldown(id, 7)
+	setCooldown(ip, 4)
+	setCooldown(id, 4)
 }
 
 func setCooldown(key string, seconds int) {
