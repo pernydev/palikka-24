@@ -68,6 +68,11 @@ func Auth(c *gin.Context) {
 	fmt.Println(data)
 
 	if data["access_token"] == nil {
+
+		discolog.Send(map[string]string{
+			"data": fmt.Sprintf("%v", data),
+		}, "AUTH ERROR")
+
 		c.JSON(400, gin.H{"error": "Invalid code"})
 		return
 	}

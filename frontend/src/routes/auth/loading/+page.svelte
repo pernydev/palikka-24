@@ -24,7 +24,7 @@
                 goto('/');
             }, 1300);
         } else {
-            console.error(await resp.text());
+            alert('Kirjautuminen epäonnistui. Tässä on virhekoodi: ' + await resp.text());
         }
 
         reloadTimeout = setTimeout(() => {

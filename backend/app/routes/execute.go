@@ -30,10 +30,6 @@ func Execute(c *gin.Context) {
 		x := data[i]
 		y := data[i+1]
 		texture := data[i+2]
-		if texture == 0 {
-			delete(state.State, fmt.Sprint(x)+","+fmt.Sprint(y))
-			continue
-		}
 		state.State[fmt.Sprint(x)+","+fmt.Sprint(y)] = texture
 	}
 
