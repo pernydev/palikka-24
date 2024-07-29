@@ -1,11 +1,11 @@
-<script>
-	import { onMount } from 'svelte';
+<script lang="ts">
+	import { onDestroy, onMount } from 'svelte';
 	import Backdrop from "$lib/Backdrop.svelte";
 	import { PUBLIC_API_URL } from '$env/static/public';
 	import { goto } from '$app/navigation';
 
     let out = false;
-
+    let reloadTimeout: any;
     onMount(async () => {
         const resp = await fetch(`${PUBLIC_API_URL}/auth`, {
             method: 'POST',
@@ -27,9 +27,13 @@
             console.error(await resp.text());
         }
 
-        setTimeout(() => {
+        reloadTimeout = setTimeout(() => {
             location.reload();
         }, 2000);
+    });
+
+    onDestroy(() => {
+        clearTimeout(reloadTimeout);
     });
 </script>
 
