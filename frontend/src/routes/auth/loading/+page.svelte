@@ -26,6 +26,10 @@
         } else {
             console.error(await resp.text());
         }
+
+        setTimeout(() => {
+            location.reload();
+        }, 2000);
     });
 </script>
 
