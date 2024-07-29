@@ -6,6 +6,7 @@
 	let dialog: HTMLDialogElement;
 	const itemCount = 250;
 
+
 	function onKeyUp(event: KeyboardEvent) {
 		switch (event.key.toLowerCase()) {
 			case 'escape':
@@ -70,9 +71,6 @@
 					console.log(index);
 					$hotbar[i] = index;
 				}}
-				onclick={() => {
-					delete $hotbar[i];
-				}}
 			>
 				{#if $hotbar[i]}
 					<img src={`/assets/blocks/${$hotbar[i]}.png`} alt="" />
@@ -84,7 +82,7 @@
 		{#each Array.from({ length: itemCount }) as _, i}
 			<button
 				ondragstart={(event) => {
-					console.log('dragstart');
+					console.log('dragstart'§);
 					event.dataTransfer?.setData('text/plain', (i + 1).toString());
 				}}
 				draggable
