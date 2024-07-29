@@ -7,7 +7,7 @@
 	import HotbarItem from './HotbarItem.svelte';
 </script>
 
-{#if $open}
+{#if $open || !$loggedIn}
 	<div class="hotbar" data-loaded={$initialLoad} data-loggedin={$loggedIn}>
 		{#if $loggedIn}
 			<HotbarItem slot="menu" />
