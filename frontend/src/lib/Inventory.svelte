@@ -73,7 +73,7 @@
 				}}
 			>
 				{#if $hotbar[i]}
-					<img src={`/assets/blocks/${$hotbar[i]}.png`} alt="" />
+					<img src={`/assets/blocks/${$hotbar[i]}.png`} alt="" draggable="false" />
 				{/if}
 			</button>
 		{/each}
