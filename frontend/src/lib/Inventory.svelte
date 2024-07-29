@@ -36,7 +36,6 @@
 	}
 
 	onMount(() => {
-		dialog.showModal();
 		setOpenInventory(() => {
 			dialog.showModal();
 			$inventoryOpen = true;
