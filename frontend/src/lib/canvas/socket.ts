@@ -6,9 +6,9 @@ import { isOpenChangeMessage, open } from './open';
 
 
 export const connected = writable(false);
+let socket: WebSocket;
 export function connect() {
-    const socket = new WebSocket(PUBLIC_WS_URL);
-
+	socket = new WebSocket(PUBLIC_WS_URL);
 	socket.onopen = () => {
 		connected.set(true);
 		console.log('WebSocket connection established');
@@ -41,4 +41,8 @@ BUT! A packet can also be an open state change, in this case the length of the p
             connect();
         }, 1000);
 	};
+}
+
+export function disconnect() {
+	socket.close();
 }

@@ -1,6 +1,8 @@
 package routes
 
 import (
+	"fmt"
+
 	"github.com/gin-gonic/gin"
 	"github.com/pernydev/palikka-24/app/connections"
 	"github.com/pernydev/palikka-24/app/staff"
@@ -23,5 +25,17 @@ func Execute(c *gin.Context) {
 	for i := 0; i < len(data); i += 3 {
 		state.PlaceBlock(int(data[i]), int(data[i+1]), uint8(data[i+2]))
 	}
+
+	for i := 0; i < len(data); i += 3 {
+		x := data[i]
+		y := data[i+1]
+		texture := data[i+2]
+		if texture == 0 {
+			delete(state.State, fmt.Sprint(x)+","+fmt.Sprint(y))
+			continue
+		}
+		state.State[fmt.Sprint(x)+","+fmt.Sprint(y)] = texture
+	}
+
 	response.Success(nil, c)
 }

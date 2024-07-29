@@ -58,7 +58,7 @@
 		margin: 0;
 	}
 
-	button {
+	a {
 		all: unset;
 		cursor: pointer;
 		color: white;

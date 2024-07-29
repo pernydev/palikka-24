@@ -2,6 +2,7 @@ import { get, writable, type Writable } from 'svelte/store';
 import './socket.ts';
 import { PUBLIC_API_URL } from '$env/static/public';
 import { fetchOpenState } from './open.js';
+import { connected } from './socket';
 
 export const grid: Writable<Record<string, number>> = writable({});
 export const initialLoad = writable(false);
@@ -13,6 +14,10 @@ export async function init() {
 
 export async function getCanvas() {
     const resp = await fetch(`${PUBLIC_API_URL}/grid`);
+    if (!resp.ok) {
+        connected.set(false);
+        return;
+    }
     const data = await resp.arrayBuffer();
     const gridData = new Uint8Array(data);
     parseGridUpdate(gridData);

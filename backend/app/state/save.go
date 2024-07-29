@@ -1,6 +1,7 @@
 package state
 
 import (
+	"fmt"
 	"os"
 	"strconv"
 	"strings"
@@ -30,8 +31,9 @@ func Autosave() {
 	defer file.Close()
 
 	for {
-		go Save(file)
-		go cooldown.CleanUp() // Just run that every three seconds too
 		time.Sleep(3 * time.Second)
+		fmt.Println("Autosaving")
+		Save(file)
+		go cooldown.CleanUp() // Just run that every three seconds too
 	}
 }

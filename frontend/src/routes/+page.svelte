@@ -1,10 +1,10 @@
 <script>
 	import Canvas from '$lib/Canvas.svelte';
-	import { connect, connected } from '$lib/canvas/socket';
+	import { connect, connected, disconnect } from '$lib/canvas/socket';
 	import Hotbar from '$lib/Hotbar.svelte';
 	import Inventory from '$lib/Inventory.svelte';
 	import Toolbox from '$lib/staff/Toolbox.svelte';
-	import { onMount } from 'svelte';
+	import { onDestroy, onMount } from 'svelte';
 	import './canvas.css';
 	import { cooldown } from '$lib/canvas/cooldown';
 	import { checkIsLoggedIn } from '$lib/canvas/auth/auth';
@@ -19,12 +19,17 @@
 			allowDisconnect = false;
 		}, 2000);
 	});
+
+	onDestroy(() => {
+		allowDisconnect = true;
+		disconnect();
+	});
 </script>
 
 {#if !$connected && !allowDisconnect}
 	<div id="disconnected-overlay">
 		<h2>Yhteys katkesi!</h2>
-		<p>Yritetään uudelleen...</p>
+		<p>Jos tässä kestää hetki, uudelleenlataa sivu. </p>
 	</div>
 {/if}
 

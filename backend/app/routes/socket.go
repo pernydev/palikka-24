@@ -28,6 +28,12 @@ func Socket(c *gin.Context) {
 	send := make(chan []byte)
 	uuid := uuid.New().String()
 
+	defer func() {
+		if err := recover(); err != nil {
+			fmt.Println("panic:", err)
+		}
+	}()
+
 	connections.AddConnection(uuid, &connections.Connection{
 		UUID:        uuid,
 		SendChannel: send,

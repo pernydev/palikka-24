@@ -31,6 +31,10 @@ func Load() {
 		y := data[i+1]
 		texture := data[i+2]
 
+		if texture == 0 {
+			continue
+		}
+
 		State[fmt.Sprint(x)+","+fmt.Sprint(y)] = texture
 		fmt.Println("Loaded", x, y, texture)
 	}

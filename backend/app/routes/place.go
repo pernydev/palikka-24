@@ -44,6 +44,8 @@ func Place(c *gin.Context) {
 		return
 	}
 
+	fmt.Println("Place", int(data[0]), int(data[1]), int(data[2]))
+
 	if !state.Open {
 		response.Error("The game is not open. Bro, we logged you, we know who you are, why you tryna API abuse?", 400, c)
 		discolog.Send(map[string]string{
@@ -67,7 +69,10 @@ func Place(c *gin.Context) {
 	}
 
 	connections.AddToDelta(data)
+
 	state.PlaceBlock(int(data[0]), int(data[1]), uint8(data[2]))
+
 	cooldown.SetCooldown(c.ClientIP(), tokenData.ID)
+
 	response.Success(nil, c)
 }
