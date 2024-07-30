@@ -23,6 +23,6 @@ func SendDelta() {
 func StartDeltaTimer() {
 	for {
 		SendDelta()
-		<-time.After(1 * time.Second)
+		<-time.After(100 * time.Millisecond)
 	}
 }

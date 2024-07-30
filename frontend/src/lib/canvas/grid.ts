@@ -3,12 +3,13 @@ import './socket.ts';
 import { PUBLIC_API_URL } from '$env/static/public';
 import { fetchOpenState } from './open.js';
 import { connected } from './socket';
+import { isEnd } from './secret/end.js';
 
 export const grid: Writable<Record<string, number>> = writable({});
 export const initialLoad = writable(false);
 
 export async function init() {
-    await Promise.all([fetchOpenState(), getCanvas()]);
+    await Promise.all([fetchOpenState(), getCanvas(), isEnd()]);
     initialLoad.set(true);
 }
 

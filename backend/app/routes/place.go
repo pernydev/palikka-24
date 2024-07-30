@@ -8,6 +8,7 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/pernydev/palikka-24/app/connections"
 	"github.com/pernydev/palikka-24/app/discolog"
+	"github.com/pernydev/palikka-24/app/explosion"
 	"github.com/pernydev/palikka-24/app/state"
 	"github.com/pernydev/palikka-24/app/state/cooldown"
 	"github.com/pernydev/palikka-24/models"
@@ -68,8 +69,30 @@ func Place(c *gin.Context) {
 		return
 	}
 
-	connections.AddToDelta(data)
+	fmt.Println("Place", int(data[0]), int(data[1]), int(data[2]), state.End)
 
+	if state.End {
+		if data[2] == 164 && !state.Whited {
+			go explosion.TNT(int(data[0]), int(data[1]))
+			response.Success(nil, c)
+		}
+
+		if state.Scene == 5 {
+			if state.GetBlock(int(data[0]), int(data[1])) != 171 {
+				response.Error("Can't place there", 400, c)
+				return
+			}
+
+			state.PlaceBlock(int(data[0]), int(data[1]), uint8(data[2]))
+			connections.AddToDelta(data)
+			response.Success(nil, c)
+			return
+		}
+
+		return
+	}
+
+	connections.AddToDelta(data)
 	state.PlaceBlock(int(data[0]), int(data[1]), uint8(data[2]))
 
 	cooldown.SetCooldown(c.ClientIP(), tokenData.ID)

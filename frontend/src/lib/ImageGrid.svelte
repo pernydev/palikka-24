@@ -31,6 +31,20 @@
 
 		Object.entries(canvasGrid).forEach(([coords, texture]) => {
 			const [x, y] = coords.split(',').map(Number);
+			
+			if (texture === 251) {
+				ctx.fillStyle = '#0a0121';
+				ctx.fillRect(x * PIXEL_SIZE, y * PIXEL_SIZE, PIXEL_SIZE, PIXEL_SIZE);
+				return;
+			}
+
+			if (texture == 171) {
+				ctx.globalAlpha = 0.3;
+				ctx.drawImage(getTexture(164), x * PIXEL_SIZE, y * PIXEL_SIZE, PIXEL_SIZE, PIXEL_SIZE);
+				ctx.globalAlpha = 1;
+				return;
+			}
+
 			ctx.drawImage(getTexture(texture), x * PIXEL_SIZE, y * PIXEL_SIZE, PIXEL_SIZE, PIXEL_SIZE);
 		});
 	}

@@ -24,6 +24,7 @@ func Save(file *os.File) {
 }
 
 func Autosave() {
+	time.Sleep(3 * time.Second)
 	file, err := os.Create("state.palikka")
 	if err != nil {
 		panic(err)

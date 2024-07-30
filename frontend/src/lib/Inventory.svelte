@@ -2,6 +2,7 @@
 	import { hotbar, selected } from './canvas/hotbar';
 	import { onMount } from 'svelte';
 	import { inventoryOpen, setCloseInventory, setOpenInventory } from './canvas/inventory';
+	import { end } from './canvas/secret/end';
 
 	let dialog: HTMLDialogElement;
 	const itemCount = 250;
@@ -79,21 +80,39 @@
 	</div>
 	<div class="items">
 		{#each Array.from({ length: itemCount }) as _, i}
-			<button
-				ondragstart={(event) => {
-					console.log('dragstart');
-					event.dataTransfer?.setData('text/plain', (i + 1).toString());
-				}}
-				draggable
-				onclick={() => inventorySlotClick(i)}
-			>
-				<img
-					src={`/assets/blocks/${i + 1}.png`}
-					alt=""
-					data-ontouch-action="inventory"
-					data-inventory-item={i + 1}
-				/>
-			</button>
+			{#if !$end}
+				<button
+					ondragstart={(event) => {
+						console.log('dragstart');
+						event.dataTransfer?.setData('text/plain', (i + 1).toString());
+					}}
+					draggable
+					onclick={() => inventorySlotClick(i)}
+				>
+					<img
+						src={`/assets/blocks/${i + 1}.png`}
+						alt=""
+						data-ontouch-action="inventory"
+						data-inventory-item={i + 1}
+					/>
+				</button>
+			{:else}
+				<button
+					ondragstart={(event) => {
+						console.log('dragstart');
+						event.dataTransfer?.setData('text/plain', (i + 1).toString());
+					}}
+					draggable
+					onclick={() => inventorySlotClick(163)}
+				>
+					<img
+						src={`/assets/blocks/164.png`}
+						alt=""
+						data-ontouch-action="inventory"
+						data-inventory-item={164}
+					/>
+				</button>
+			{/if}
 		{/each}
 	</div>
 </dialog>

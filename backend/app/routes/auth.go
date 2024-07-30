@@ -112,13 +112,6 @@ func Auth(c *gin.Context) {
 		return
 	}
 
-	go func() {
-		discolog.Send(map[string]string{
-			"user":  fmt.Sprintf("<@%s>", tokenData.ID),
-			"staff": fmt.Sprintf("%t", tokenData.Staff),
-		}, "User logged in")
-	}()
-
 	c.JSON(200, gin.H{"token": tokenString, "staff": tokenData.Staff})
 }
 

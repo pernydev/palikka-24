@@ -1,8 +1,10 @@
 import { PUBLIC_WS_URL } from '$env/static/public';
 import { writable } from 'svelte/store';
 import { blobToArrayBuffer } from '../..';
-import { parseGridUpdate } from './grid';
-import { isOpenChangeMessage, open } from './open';
+import { getCanvas, parseGridUpdate } from './grid';
+import { open } from './open';
+import { end } from './secret/end';
+import { hotbar } from './hotbar';
 
 
 export const connected = writable(false);
@@ -28,8 +30,7 @@ BUT! A packet can also be an open state change, in this case the length of the p
 		console.log('Received message from WebSocket');
 		const arrayBuffer = await blobToArrayBuffer(event.data);
 		const data = new Uint8Array(arrayBuffer);
-		if (isOpenChangeMessage(data)) {
-			open.set(data[0] === 1);
+		if (executeEvent(data)) {
 			return;
 		}
 		parseGridUpdate(data);
@@ -45,4 +46,39 @@ BUT! A packet can also be an open state change, in this case the length of the p
 
 export function disconnect() {
 	socket.close();
+}
+
+export function executeEvent(message: Uint8Array): boolean {
+    if (message.length !== 1) {
+        return false;
+    }
+
+    if (message[0] === (new Uint8Array([2]))[0]) {
+		getCanvas();
+        return true;
+    }
+	
+    if (message[0] === (new Uint8Array([3]))[0]) {
+        end.set(true);
+		hotbar.set({
+			0: 164,
+			1: 164,
+			2: 164,
+			3: 164,
+			4: 164,
+			5: 164,
+			6: 164,
+			7: 164,
+			8: 164,
+			9: 164,
+		});
+        return true;
+    }
+
+	if (message[0] === 1 || message[0] === 0) {
+		open.set(message[0] === 1);
+		return true;
+	}
+
+	return false;
 }

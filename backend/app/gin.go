@@ -31,5 +31,8 @@ func InitServer() {
 	router.POST("/api/open", routes.SetOpen)
 	router.GET("/api/open", routes.GetOpen)
 
+	router.POST("/api/end", routes.SetEnd)
+	router.GET("/api/end", routes.GetEnd)
+
 	router.Run(":" + os.Getenv("PORT"))
 }

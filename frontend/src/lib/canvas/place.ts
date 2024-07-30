@@ -7,6 +7,8 @@ import { startCooldown } from './cooldown';
 export async function place(x: number, y: number) {
 	const texture = get(hotbar)[get(selected)];
 
+	if (texture === 171) return;
+
 	grid.update((grid) => {
 		if (texture === undefined) {
 			delete grid[`${x},${y}`];

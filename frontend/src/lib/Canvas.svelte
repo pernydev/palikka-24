@@ -12,6 +12,8 @@
 	import { tool } from './canvas/tool';
 	import { deleteArea } from './canvas/staff/area';
 	import { cooldown } from './canvas/cooldown';
+	import { get } from 'svelte/store';
+	import { end } from './canvas/secret/end';
 
 	let canvas: HTMLDivElement;
 
@@ -103,6 +105,7 @@
 		};
 
 		if (event.which === 2) {
+			if (get(end)) return;
 			if ($selected === -1) $selected = 0;
 			const block = $grid[`${selection.x},${selection.y}`];
 			if (block) {

@@ -3,7 +3,7 @@
 	import { initialLoad } from '$lib/canvas/grid';
 	import { open } from '$lib/canvas/open';
 	import { tool } from '$lib/canvas/tool';
-	import { Brush, Lock, Scan, Unlock } from 'lucide-svelte';
+	import { Brush, FileQuestion, Lock, Scan, Unlock } from 'lucide-svelte';
 	import { onMount } from 'svelte';
 
 	let showTools = $state(false);
@@ -16,6 +16,16 @@
 
 	function sendLockStatus() {
 		fetch(`${PUBLIC_API_URL}/open`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: localStorage.getItem('token') ?? ''
+			}
+		});
+	}
+
+	function sendEndStatus() {
+		fetch(`${PUBLIC_API_URL}/end`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
@@ -40,6 +50,9 @@
 				{:else}
 					<Unlock />
 				{/if}
+			</button>
+			<button onclick={() => (sendEndStatus())}>
+				<FileQuestion />
 			</button>
 		{/if}
 	</div>

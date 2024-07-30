@@ -4,6 +4,7 @@
 	import { initialLoad } from './canvas/grid';
 	import { inventoryOpen } from './canvas/inventory';
 	import { open } from './canvas/open';
+	import { end } from './canvas/secret/end';
 	import HotbarItem from './HotbarItem.svelte';
 </script>
 
@@ -16,7 +17,11 @@
 				<HotbarItem slot={i} />
 			{/each}
 			<span class="seprator second"></span>
-			<HotbarItem slot="remove" />
+			{#if !$end}
+				<HotbarItem slot="remove" />
+			{:else}
+				<HotbarItem slot={9} />
+			{/if}
 		{:else}
 			<p>Kirjaudu sisään piirtääksesi</p>
 			<a href="/auth">Kirjaudu sisään</a>
